@@ -13,8 +13,8 @@ class Horse(Piece):
             ((-1, 2), (0, 1)),
             ((1, -2), (0, -1)),
             ((-1, -2), (0, -1)),
-            ((2, 1), (1, -1)),
-            ((2, -1), (1, 1)),
+            ((2, 1), (1, 0)),
+            ((2, -1), (1, 0)),
             ((-2, 1), (-1, 0)),
             ((-2, -1), (-1, 0))
         ]
@@ -22,7 +22,10 @@ class Horse(Piece):
         # Check the 8 possible moves for the horse
         for (dx, dy), (block_dx, block_dy) in directions:
             block = (x + block_dx, y + block_dy)
-            if (board.is_empty(block)):
+            isBlocked = board.is_valid_position(block)
+            if (isBlocked):
+                isBlocked = board.is_empty(block)
+            if (isBlocked):
                 new_pos = (x + dx, y + dy)
                 if board.is_valid_position(new_pos):
                     piece_at_new_pos = board.get_piece(new_pos)
