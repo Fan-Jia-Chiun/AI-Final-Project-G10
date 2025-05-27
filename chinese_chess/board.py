@@ -23,8 +23,8 @@ class Board:
         self.grid[0][6] = Elephant(PieceColor.RED, (6, 0))
         self.grid[0][7] = Horse(PieceColor.RED, (7, 0))
         self.grid[0][8] = Chariot(PieceColor.RED, (8, 0))
-        self.grid[2][1] = Canon(PieceColor.RED, (1, 3))
-        self.grid[2][7] = Canon(PieceColor.RED, (7, 3))
+        self.grid[2][1] = Canon(PieceColor.RED, (1, 2))
+        self.grid[2][7] = Canon(PieceColor.RED, (7, 2))
         for i in range(0, 9, 2):
             self.grid[3][i] = Soldier(PieceColor.RED, (i, 3))
 
@@ -38,8 +38,8 @@ class Board:
         self.grid[9][6] = Elephant(PieceColor.BLACK, (6, 9))
         self.grid[9][7] = Horse(PieceColor.BLACK, (7, 9))
         self.grid[9][8] = Chariot(PieceColor.BLACK, (8, 9))
-        self.grid[7][1] = Canon(PieceColor.BLACK, (1, 6))
-        self.grid[7][7] = Canon(PieceColor.BLACK, (7, 6))
+        self.grid[7][1] = Canon(PieceColor.BLACK, (1, 7))
+        self.grid[7][7] = Canon(PieceColor.BLACK, (7, 7))
         for i in range(0, 9, 2):
             self.grid[6][i] = Soldier(PieceColor.BLACK, (i, 6))
     
@@ -61,4 +61,19 @@ class Board:
 
     def place_piece(self, piece):
         x, y = piece.position
+        old_piece = self.grid[y][x]
         self.grid[y][x] = piece
+        return old_piece
+
+    def remove_piece(self, position):
+        x, y = position
+        piece = self.grid[y][x]
+        self.grid[y][x] = None
+        return piece
+
+    def translate_position(self, position):
+        x = ord(position[0]) - ord("a")
+        y = int(position[1:]) - 1
+        if not self.is_valid_position((x, y)):
+            raise ValueError("Invalid position")
+        return (x, y)

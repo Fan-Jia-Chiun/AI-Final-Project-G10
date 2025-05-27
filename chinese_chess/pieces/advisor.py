@@ -14,9 +14,9 @@ class Advisor(Piece):
             if board.is_valid_position(new_pos):
                 piece_at_new_pos = board.get_piece(new_pos)
                 if piece_at_new_pos is None or piece_at_new_pos.color != self.color:
-                    if self.color == PieceColor.RED and new_pos[0] <= 2 and new_pos[1] <= 2:
+                    if self.color == PieceColor.RED and 4 <= new_pos[0] <= 6 and 0 <= new_pos[1] <= 2:
                         moves.append(new_pos)
-                    elif self.color == PieceColor.BLACK and new_pos[0] >= 7 and new_pos[1] >= 7:
+                    elif self.color == PieceColor.BLACK and 4 <= new_pos[0] <= 6 and 7 <= new_pos[1] <= 9:
                         moves.append(new_pos)
         
         return moves
