@@ -77,3 +77,23 @@ class Board:
         if not self.is_valid_position((x, y)):
             raise ValueError("Invalid position")
         return (x, y)
+    
+    def terminate(self):
+        red_general = None
+        black_general = None
+        for row in self.grid:
+            for piece in row:
+                if isinstance(piece, General) and piece.color == PieceColor.RED:
+                    red_general = piece
+                    break
+                if isinstance(piece, General) and piece.color == PieceColor.BLACK:
+                    black_general = piece
+                    break
+        if red_general is None:
+            print("Black wins!")
+            return True
+        elif black_general is None:
+            print("Red wins!")
+            return True
+        
+        return False
