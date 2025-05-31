@@ -26,8 +26,6 @@ def single_player_mode(board: Board):
                 raise Exception("It's not your turn.")
             
             valid_moves = piece.valid_moves(board)
-            print(old_pos, new_pos)
-            print(valid_moves)
             if new_pos not in valid_moves:
                 raise Exception("Invalid move.")
 
@@ -40,6 +38,9 @@ def single_player_mode(board: Board):
 
             board.display()
             isRedTurn = not isRedTurn
+            if board.terminate():
+                print("Game over!")
+                break
         except Exception as e:
             print(f"Invalid move: {e}")
 
@@ -68,10 +69,7 @@ def two_players_mode(board: Board):
             if piece.color != (PieceColor.RED if isRedTurn else PieceColor.BLACK):
                 raise Exception("It's not your turn.")
             
-            print("aaa", piece.name, piece.color, piece.position)
             valid_moves = piece.valid_moves(board)
-            print(valid_moves)
-            print(old_pos, new_pos)
             if new_pos not in valid_moves:
                 raise Exception("Invalid move.")
 
@@ -85,6 +83,9 @@ def two_players_mode(board: Board):
 
             board.display()
             isRedTurn = not isRedTurn
+            if board.terminate():
+                print("Game over!")
+                break
         except Exception as e:
             print(f"Invalid move: {e}")
 
