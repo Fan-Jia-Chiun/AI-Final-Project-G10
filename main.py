@@ -11,7 +11,7 @@ def single_player_mode(board: Board):
     while True:
         # Select the type of agent.
         agent = input("Select the type of agent (minimax, alphabeta, reflex): ").lower()
-        if agent.lower() == "exit":
+        if agent == "exit":
             return
         if agent not in ['minimax', 'alphabeta', 'reflex']:
             print("Invalid agent name.")
@@ -25,24 +25,35 @@ def single_player_mode(board: Board):
         break
     
     while True:
-        # Implement AI logic here
         if isRedTurn:
+            # AI's turn (red side)
             print("It's AI's turn.")
+            
+            # Agent makes decision.
             old_pos, new_pos = agent(board)
-            piece: Piece = board.remove_piece(old_pos)
-            piece.position = new_pos
             start = chr(old_pos[0] + ord('a')) + str(old_pos[1] + 1)
             end = chr(new_pos[0] + ord('a')) + str(new_pos[1] + 1)
             print(f"AI move: {start} -> {end}")
+            
+            # Move the piece
+            piece: Piece = board.get_piece(old_pos)
+            piece.position = new_pos
             board.place_piece(piece)
+            removed_piece = board.remove_piece(old_pos)
+            if removed_piece:
+                print(f"Removed piece: {removed_piece.display()}")
+            
+            # Display current situation.
             board.display()
+            print()
             isRedTurn = not isRedTurn
             if board.terminate():
                 print("Game over!")
                 break
         else:
-            # For now, just simulate a move
+            # User's turn (black side)
             
+            # User makes decision.
             move = input("Enter your move (e.g., 'e2 e4'): ")
             if move.lower() == "exit":
                 break
@@ -55,13 +66,14 @@ def single_player_mode(board: Board):
                     print(cor, end = ' ')
                 print()
                 continue
+            
             try:
+                # Judge whether the position is available.
                 start, end = move.split()
                 old_pos = board.translate_position(start)
                 new_pos = board.translate_position(end)
                 
                 piece: Piece = board.get_piece(old_pos)
-                print(piece)
                 if piece is None:
                     raise Exception("No piece at start position.")
                 
@@ -79,11 +91,15 @@ def single_player_mode(board: Board):
                 if removed_piece:
                     print(f"Removed piece: {removed_piece.display()}")
     
+                # Display current situation.
                 board.display()
+                print()
                 isRedTurn = not isRedTurn
                 if board.terminate():
                     print("Game over!")
                     break
+            
+            # Handle exception.
             except Exception as e:
                 print(f"Invalid move: {e}")
 
@@ -125,6 +141,7 @@ def two_players_mode(board: Board):
                 print(f"Removed piece: {old_piece.display()}")
 
             board.display()
+            print()
             isRedTurn = not isRedTurn
             if board.terminate():
                 print("Game over!")
