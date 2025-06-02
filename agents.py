@@ -7,6 +7,7 @@ from chinese_chess.pieces.elephant import Elephant
 from chinese_chess.pieces.general import General
 from chinese_chess.pieces.horse import Horse
 from chinese_chess.pieces.soldier import Soldier
+import copy
 import numpy as np
 import random
 
@@ -32,11 +33,12 @@ def minimax(board: Board, depth, maximizingPlayer):
                 
                 # Go through all available moves.
                 moves = piece.valid_moves(board)
+                cur_board = copy.deepcopy(board)
                 for new_pos in moves:
                     # Go down the tree.
                     piece.position = new_pos
-                    ori_piece = board.place_piece(piece)
-                    score, _ = minimax(board, depth - 1, False)
+                    ori_piece = cur_board.place_piece(piece)
+                    score, _ = minimax(cur_board, depth - 1, False)
                     
                     # Update the result.
                     if score > cur_max:
@@ -44,13 +46,6 @@ def minimax(board: Board, depth, maximizingPlayer):
                         cur_best_move = {(old_pos, new_pos)}
                     elif score == cur_max:
                         cur_best_move.add((old_pos, new_pos))
-
-                    # Resume the original board.
-                    piece.position = old_pos
-                    board.place_piece(piece)
-                    if ori_piece != None:
-                        ori_piece.position = new_pos
-                        board.place_piece(ori_piece)
 
         return cur_max, cur_best_move
     
@@ -116,10 +111,11 @@ def alphabeta(board, depth, maximizingPlayer, alpha, beta):
                 
                 # Go through all available moves.
                 moves = piece.valid_moves(board)
+                cur_board = copy.deepcopy(board)
                 for new_pos in moves:
                     piece.position = new_pos
-                    ori_piece = board.place_piece(piece)
-                    score, _ = alphabeta(board, depth - 1, False, alpha, beta)
+                    ori_piece = cur_board.place_piece(piece)
+                    score, _ = alphabeta(cur_board, depth - 1, False, alpha, beta)
 
                     # Update the result.
                     if score > cur_max:
@@ -158,11 +154,12 @@ def alphabeta(board, depth, maximizingPlayer, alpha, beta):
                 
                 # Go through all available moves.
                 moves = piece.valid_moves(board)
+                cur_board = copy.deepcopy(board)
                 for new_pos in moves:
                     # Go down the tree.
                     piece.position = new_pos
-                    ori_piece = board.place_piece(piece)
-                    score, _ = alphabeta(board, depth - 1, True, alpha, beta)
+                    ori_piece = cur_board.place_piece(piece)
+                    score, _ = alphabeta(cur_board, depth - 1, True, alpha, beta)
                     
                     # Update the result.
                     if score < cur_min:
@@ -174,14 +171,7 @@ def alphabeta(board, depth, maximizingPlayer, alpha, beta):
                     # Prune the branch.
                     beta = min(beta, cur_min)
                     if beta <= alpha:
-                        return cur_min, cur_best_move 
-
-                    # Resume the original board.
-                    piece.position = old_pos
-                    board.place_piece(piece)
-                    if ori_piece != None:
-                        ori_piece.position = new_pos
-                        board.place_piece(ori_piece)
+                        return cur_min, cur_worst_move
         return cur_min, cur_worst_move
 
 
@@ -194,7 +184,7 @@ def agent_minimax(board):
 def agent_alphabeta(board):
     # Randomly choose one available move.
     # Assume depth = 5.
-    return random.choice(list(alphabeta(board, 2, True, -np.inf, np.inf)[1]))
+    return random.choice(list(alphabeta(board, 5, True, -np.inf, np.inf)[1]))
 
 
 def agent_reflex(board):

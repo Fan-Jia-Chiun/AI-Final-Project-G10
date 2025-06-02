@@ -44,8 +44,14 @@ class Board:
             self.grid[6][i] = Soldier(PieceColor.BLACK, (i, 6))
     
     def display(self):
-        for row in self.grid:
+        for y in range(5):
+            row = self.grid[y]
             print(" ".join([piece.display() if piece is not None else "空" for piece in row]))
+        print("--------------------------")
+        for y in range(5, 10):
+            row = self.grid[y]
+            print(" ".join([piece.display() if piece is not None else "空" for piece in row]))
+        
 
     def is_valid_position(self, position):
         x, y = position
@@ -53,6 +59,7 @@ class Board:
 
     def is_empty(self, position):
         x, y = position
+        print("TEST", x, y)
         return self.grid[y][x] is None
 
     def get_piece(self, position):

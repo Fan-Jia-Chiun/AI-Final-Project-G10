@@ -43,8 +43,8 @@ def single_player_mode(board: Board):
             piece.position = new_pos
             board.place_piece(piece)
             removed_piece = board.remove_piece(old_pos)
-            if removed_piece:
-                print(f"Removed piece: {removed_piece.display()}")
+            # if removed_piece:
+            #     print(f"Removed piece: {removed_piece.display()}")
             
             # Display current situation.
             board.display()
@@ -64,6 +64,9 @@ def single_player_mode(board: Board):
                 pos = input("Enter position (e.g., 'e2'): ")
                 pos = board.translate_position(pos)
                 piece: Piece = board.get_piece(pos)
+                if piece == None:
+                    print("Invalid position.")
+                    continue
                 for m in piece.valid_moves(board):
                     cor = chr(m[0] + ord('a')) + str(m[1] + 1)
                     print(cor, end = ' ')
@@ -116,7 +119,10 @@ def two_players_mode(board: Board):
         if move.lower() == "valid":
             pos = input("Enter position (e.g., 'e2'): ")
             pos = board.translate_position(pos)
-            piece: Piece = board.get_piece(pos)
+            piece: Piece = board.get_piece(pos)            
+            if piece == None:
+                print("Invalid position.")
+                continue
             print(piece.valid_moves(board))
             continue
         try:
@@ -139,9 +145,8 @@ def two_players_mode(board: Board):
             piece.position = new_pos
             old_piece = board.place_piece(piece)
             board.remove_piece(old_pos)
-
-            if old_piece:
-                print(f"Removed piece: {old_piece.display()}")
+            # if old_piece:
+            #     print(f"Removed piece: {old_piece.display()}")
 
             board.display()
             print()
