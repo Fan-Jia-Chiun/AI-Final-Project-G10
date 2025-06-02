@@ -10,13 +10,21 @@ class Advisor(Piece):
         directions = [(1, 1), (-1, 1), (1, -1), (-1, -1)]
 
         for dx, dy in directions:
-            new_pos = (x + dx, y + dy)
-            if board.is_valid_position(new_pos):
-                piece_at_new_pos = board.get_piece(new_pos)
-                if piece_at_new_pos is None or (piece_at_new_pos.color != self.color and piece_at_new_pos.name not in ["帥", "將"]):
-                    if self.color == PieceColor.RED and 4 <= new_pos[0] <= 6 and 0 <= new_pos[1] <= 2:
-                        moves.append(new_pos)
-                    elif self.color == PieceColor.BLACK and 4 <= new_pos[0] <= 6 and 7 <= new_pos[1] <= 9:
-                        moves.append(new_pos)
-        
+            new_x, new_y = x + dx, y + dy
+            new_pos = (new_x, new_y)
+            
+            if not board.is_valid_position(new_pos):
+                continue
+            
+            piece_at_new = board.get_piece(new_pos)
+            if piece_at_new is not None and piece_at_new.color == self.color:
+                continue
+
+            if self.color == PieceColor.RED:
+                if 3 <= new_x <= 5 and 0 <= new_y <= 2:
+                    moves.append(new_pos)
+            else:
+                if 3 <= new_x <= 5 and 7 <= new_y <= 9:
+                    moves.append(new_pos)
+
         return moves

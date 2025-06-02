@@ -11,16 +11,20 @@ class Chariot(Piece):
 
         for dx, dy in directions:
             for step in range(1, 10):
-                new_pos = (x + dx * step, y + dy * step)
+                new_x = x + dx * step
+                new_y = y + dy * step
+                new_pos = (new_x, new_y)
+
                 if not board.is_valid_position(new_pos):
                     break
-                piece_at_new_pos = board.get_piece(new_pos)
-                if piece_at_new_pos is None:
+
+                piece_at_new = board.get_piece(new_pos)
+
+                if piece_at_new is None:
                     moves.append(new_pos)
-                elif piece_at_new_pos.color != self.color and piece_at_new_pos.name not in ["相", "象", "仕", "士", "帥", "將"]:
-                    moves.append(new_pos)
-                    break
                 else:
+                    if piece_at_new.color != self.color:
+                        moves.append(new_pos)
                     break
-        
-        return [m for m in moves if board.is_valid_position(m)]
+
+        return moves

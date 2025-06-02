@@ -10,11 +10,30 @@ class Elephant(Piece):
         directions = [(2, 2), (-2, 2), (2, -2), (-2, -2)]
 
         for dx, dy in directions:
-            new_pos = (x + dx, y + dy)
+            new_x = x + dx
+            new_y = y + dy
+            new_pos = (new_x, new_y)
+
             block = (x + dx // 2, y + dy // 2)
-            if board.is_valid_position(new_pos) and board.is_empty(block):
-                piece_at_new_pos = board.get_piece(new_pos)
-                if piece_at_new_pos is None or (piece_at_new_pos.name not in ["仕", "士", "帥", "將"]):
+
+            if not board.is_valid_position(new_pos):
+                continue
+
+            if not board.is_empty(block):
+                continue
+
+            if self.color == PieceColor.RED:
+                if new_y > 4:
+                    continue
+            else:
+                if new_y < 5:
+                    continue
+
+            piece_at_new = board.get_piece(new_pos)
+            if piece_at_new is None:
+                moves.append(new_pos)
+            else:
+                if piece_at_new.color != self.color:
                     moves.append(new_pos)
-        
+
         return moves

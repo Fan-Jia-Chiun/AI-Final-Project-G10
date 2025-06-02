@@ -11,6 +11,7 @@ class Board:
     def __init__(self):
         self.grid = [[None for _ in range(9)] for _ in range(10)]  # 10x9 的棋盤
         self.setup_board()
+        self.history = []
     
     def setup_board(self):
         # Intialize the board with red pieces
@@ -105,3 +106,47 @@ class Board:
             return True
         
         return False
+    
+    def make_move(self, from_pos, to_pos):
+        fx, fy = from_pos
+        tx, ty = to_pos
+
+        piece = self.get_piece(from_pos)
+        if piece is None:
+            raise ValueError(f"No piece at {from_pos} to move.")
+
+        captured = self.get_piece(to_pos)
+
+        self.grid[fy][fx] = None
+
+        piece.position = (tx, ty)
+        self.grid[ty][tx] = piece
+
+        self.history.append({
+            'piece': piece,
+            'from': from_pos,
+            'to': to_pos,
+            'captured': captured
+        })
+
+    def undo_move(self):
+        if not self.history:
+            raise ValueError("No moves to undo.")
+
+        record = self.history.pop()
+        piece = record['piece']
+        from_pos = record['from']
+        to_pos = record['to']
+        captured = record['captured']
+
+        fx, fy = from_pos
+        tx, ty = to_pos
+
+        self.grid[ty][tx] = None
+
+        piece.position = (fx, fy)
+        self.grid[fy][fx] = piece
+
+        if captured is not None:
+            captured.position = (tx, ty)
+            self.grid[ty][tx] = captured

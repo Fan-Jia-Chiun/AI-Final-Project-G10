@@ -10,32 +10,43 @@ class General(Piece):
         directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
 
         for dx, dy in directions:
-            new_pos = (x + dx, y + dy)
-            if board.is_valid_position(new_pos):
-                piece_at_new_pos = board.get_piece(new_pos)
-                if piece_at_new_pos is None or (piece_at_new_pos.color != self.color and piece_at_new_pos.name not in ["兵", "卒"]):
-                    if self.color == PieceColor.RED and new_pos[1] <= 2:
-                        moves.append(new_pos)
-                    elif self.color == PieceColor.BLACK and new_pos[1] >= 7:
-                        moves.append(new_pos)
-        
+            new_x, new_y = x + dx, y + dy
+            new_pos = (new_x, new_y)
+
+            if not board.is_valid_position(new_pos):
+                continue
+
+            if not (3 <= new_x <= 5):
+                continue
+
+            if self.color == PieceColor.RED:
+                if new_y > 2:
+                    continue
+            else: 
+                if new_y < 7:
+                    continue
+
+            piece_at_new = board.get_piece(new_pos)
+            if piece_at_new is None or piece_at_new.color != self.color:
+                moves.append(new_pos)
+
         if self.color == PieceColor.RED:
-            for ny in range(y + 1, 10):
-                new_pos = (x, ny)
-                piece = board.get_piece(new_pos)
-                if piece != None:
-                    if isinstance(piece, General):
-                        moves.append(new_pos)
-                    else:
-                        break
+            for scan_y in range(y + 1, 10):
+                scan_pos = (x, scan_y)
+                piece = board.get_piece(scan_pos)
+                if piece is None:
+                    continue
+                if isinstance(piece, General) and piece.color != self.color:
+                    moves.append(scan_pos)
+                break
         else:
-            for ny in range(y - 1, -1, -1):
-                new_pos = (x, ny)
-                piece = board.get_piece(new_pos)
-                if piece != None:
-                    if isinstance(piece, General):
-                        moves.append(new_pos)
-                    else:
-                        break
-                    
+            for scan_y in range(y - 1, -1, -1):
+                scan_pos = (x, scan_y)
+                piece = board.get_piece(scan_pos)
+                if piece is None:
+                    continue
+                if isinstance(piece, General) and piece.color != self.color:
+                    moves.append(scan_pos)
+                break
+
         return moves
