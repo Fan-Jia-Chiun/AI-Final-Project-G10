@@ -14,7 +14,7 @@ class Elephant(Piece):
             block = (x + dx // 2, y + dy // 2)
             if board.is_valid_position(new_pos) and board.is_empty(block):
                 piece_at_new_pos = board.get_piece(new_pos)
-                if piece_at_new_pos is None or piece_at_new_pos.color != self.color:
+                if piece_at_new_pos is None or (piece_at_new_pos.name not in ["仕", "士", "帥", "將"]):
                     moves.append(new_pos)
         
         return moves

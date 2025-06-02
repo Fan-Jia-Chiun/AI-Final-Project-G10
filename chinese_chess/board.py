@@ -59,7 +59,6 @@ class Board:
 
     def is_empty(self, position):
         x, y = position
-        print("TEST", x, y)
         return self.grid[y][x] is None
 
     def get_piece(self, position):
@@ -85,7 +84,7 @@ class Board:
             raise ValueError("Invalid position")
         return (x, y)
     
-    def terminate(self):
+    def terminate(self, print_out = False):
         red_general = None
         black_general = None
         for row in self.grid:
@@ -97,10 +96,12 @@ class Board:
                     black_general = piece
                     break
         if red_general is None:
-            print("Black wins!")
+            if print_out:
+                print("Black wins!")
             return True
         elif black_general is None:
-            print("Red wins!")
+            if print_out:
+                print("Red wins!")
             return True
         
         return False

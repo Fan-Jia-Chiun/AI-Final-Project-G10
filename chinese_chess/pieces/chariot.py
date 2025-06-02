@@ -17,7 +17,7 @@ class Chariot(Piece):
                 piece_at_new_pos = board.get_piece(new_pos)
                 if piece_at_new_pos is None:
                     moves.append(new_pos)
-                elif piece_at_new_pos.color != self.color:
+                elif piece_at_new_pos.color != self.color and piece_at_new_pos.name not in ["相", "象", "仕", "士", "帥", "將"]:
                     moves.append(new_pos)
                     break
                 else:

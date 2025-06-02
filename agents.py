@@ -11,7 +11,7 @@ import copy
 import numpy as np
 import random
 
-def minimax(board: Board, depth, maximizingPlayer):
+def minimax(board: Board, depth, maximizingPlayer, color: PieceColor):
     # Reach the target depth or terminate state: return current heuristic value.
     if depth == 0 or board.terminate():
         return get_heuristic(board, maximizingPlayer), None
@@ -28,7 +28,7 @@ def minimax(board: Board, depth, maximizingPlayer):
                 if board.is_empty(old_pos):
                     continue
                 piece: Piece = board.get_piece(old_pos)
-                if piece.color != PieceColor.RED:
+                if piece.color != color:
                     continue
                 
                 # Go through all available moves.
@@ -38,7 +38,7 @@ def minimax(board: Board, depth, maximizingPlayer):
                     # Go down the tree.
                     piece.position = new_pos
                     ori_piece = cur_board.place_piece(piece)
-                    score, _ = minimax(cur_board, depth - 1, False)
+                    score, _ = minimax(cur_board, depth - 1, False, color)
                     
                     # Update the result.
                     if score > cur_max:
@@ -61,16 +61,17 @@ def minimax(board: Board, depth, maximizingPlayer):
                 if board.is_empty(old_pos):
                     continue
                 piece: Piece = board.get_piece(old_pos)
-                if piece.color != PieceColor.BLACK:
+                if piece.color == color:
                     continue
                 
                 # Go through all available moves.
                 moves = piece.valid_moves(board)
+                cur_board = copy.deepcopy(board)
                 for new_pos in moves:
                     # Go down the tree.
                     piece.position = new_pos
-                    ori_piece = board.place_piece(piece)
-                    score, _ = minimax(board, depth - 1, True)
+                    ori_piece = cur_board.place_piece(piece)
+                    score, _ = minimax(cur_board, depth - 1, True, color)
                     
                     # Update the result.
                     if score < cur_min:
@@ -79,17 +80,10 @@ def minimax(board: Board, depth, maximizingPlayer):
                     elif score == cur_min:
                         cur_worst_move.add((old_pos, new_pos))
 
-                    # Resume the original board.
-                    piece.position = old_pos
-                    board.place_piece(piece)
-                    if ori_piece != None:
-                        ori_piece.position = new_pos
-                        board.place_piece(ori_piece)
-
         return cur_min, cur_worst_move
 
 
-def alphabeta(board, depth, maximizingPlayer, alpha, beta):
+def alphabeta(board, depth, maximizingPlayer, alpha, beta, color: PieceColor):
     # Reach the target depth or terminate state: return current heuristic value.
     if depth == 0 or board.terminate():
         return get_heuristic(board, maximizingPlayer), None
@@ -106,7 +100,7 @@ def alphabeta(board, depth, maximizingPlayer, alpha, beta):
                 if board.is_empty(old_pos):
                     continue
                 piece: Piece = board.get_piece(old_pos)
-                if piece.color != PieceColor.RED:
+                if piece.color != color:
                     continue
                 
                 # Go through all available moves.
@@ -115,7 +109,7 @@ def alphabeta(board, depth, maximizingPlayer, alpha, beta):
                 for new_pos in moves:
                     piece.position = new_pos
                     ori_piece = cur_board.place_piece(piece)
-                    score, _ = alphabeta(cur_board, depth - 1, False, alpha, beta)
+                    score, _ = alphabeta(cur_board, depth - 1, False, alpha, beta, color)
 
                     # Update the result.
                     if score > cur_max:
@@ -149,7 +143,7 @@ def alphabeta(board, depth, maximizingPlayer, alpha, beta):
                 if board.is_empty(old_pos):
                     continue
                 piece: Piece = board.get_piece(old_pos)
-                if piece.color != PieceColor.BLACK:
+                if piece.color == color:
                     continue
                 
                 # Go through all available moves.
@@ -159,7 +153,7 @@ def alphabeta(board, depth, maximizingPlayer, alpha, beta):
                     # Go down the tree.
                     piece.position = new_pos
                     ori_piece = cur_board.place_piece(piece)
-                    score, _ = alphabeta(cur_board, depth - 1, True, alpha, beta)
+                    score, _ = alphabeta(cur_board, depth - 1, True, alpha, beta, color)
                     
                     # Update the result.
                     if score < cur_min:
@@ -175,25 +169,25 @@ def alphabeta(board, depth, maximizingPlayer, alpha, beta):
         return cur_min, cur_worst_move
 
 
-def agent_minimax(board):
+def agent_minimax(board, color: PieceColor):
     # Randomly choose one available move.
     # Assume depth = 5.
-    return random.choice(list(minimax(board, 5, True)[1]))
+    return random.choice(list(minimax(board, 3, True, color)[1]))
 
 
-def agent_alphabeta(board):
+def agent_alphabeta(board, color: PieceColor):
     # Randomly choose one available move.
     # Assume depth = 5.
-    return random.choice(list(alphabeta(board, 5, True, -np.inf, np.inf)[1]))
+    return random.choice(list(alphabeta(board, 5, True, -np.inf, np.inf, color)[1]))
 
 
-def agent_reflex(board):
+def agent_reflex(board, color: PieceColor):
     # Find the first unempty grid and randomly return an available move.
     for x in range(9):
         for y in range(10):
             old_pos = (x, y)
             piece: Piece = board.get_piece(old_pos)
-            if piece == None:
+            if piece == None or piece.color != color:
                 continue
             moves = piece.valid_moves(board)
             if len(moves) != 0:
@@ -281,7 +275,7 @@ def get_heuristic(board, maximizingPlayer):
                             score += -1e6                      
                         elif isinstance(new_piece, Chariot): # 俥
                             score += -2e5
-                        elif isinstance(new_piece, Canon): # 炮
+                        elif isinstance(new_piece, Canon): # 
                             score += -1e5
                         elif isinstance(new_piece, Horse): # 傌
                             score += -5e4

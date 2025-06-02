@@ -29,7 +29,7 @@ class Horse(Piece):
                 new_pos = (x + dx, y + dy)
                 if board.is_valid_position(new_pos):
                     piece_at_new_pos = board.get_piece(new_pos)
-                    if piece_at_new_pos is None or piece_at_new_pos.color != self.color:
+                    if piece_at_new_pos is None or (piece_at_new_pos.color != self.color and piece_at_new_pos.name in ["炮", "砲", "兵", "卒"]):
                         moves.append(new_pos)
         
         return moves
