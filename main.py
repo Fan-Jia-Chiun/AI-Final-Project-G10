@@ -1,6 +1,7 @@
 from chinese_chess.board import Board
 from chinese_chess.pieces.base import PieceColor, Piece
 from agents import agent_minimax, agent_alphabeta, agent_reflex
+import time
 
 def place_piece(board: Board, piece, position):
     pass
@@ -30,6 +31,7 @@ def single_player_mode(board: Board):
     while True:
         if isRedTurn:
             # AI's turn (red side)
+            start_ts = time.time()
             print("It's AI's turn.")
             
             # 讓 agent 決定走哪一手
@@ -43,6 +45,9 @@ def single_player_mode(board: Board):
             captured = board.history[-1]['captured']
             if captured is not None:
                 print(f"AI captured: {captured.display()}")
+            
+            elapsed = time.time() - start_ts
+            print(f"AI took {elapsed:.2f} seconds to make a move.")
             
             # 顯示棋盤
             board.display()
@@ -153,6 +158,7 @@ def two_AI_mode(board: Board):
         print(f"It's {'Red' if isRedTurn else 'Black'} (AI{1 if isRedTurn else 2})'s turn.")
         
         # 讓對應 agent 做決策
+        start_ts = time.time()
         if isRedTurn:
             old_pos, new_pos = agent1(board, PieceColor.RED)
         else:
@@ -166,6 +172,9 @@ def two_AI_mode(board: Board):
         captured = board.history[-1]['captured']
         if captured is not None:
             print(f"AI{1 if isRedTurn else 2} captured: {captured.display()}")
+
+        elapsed = time.time() - start_ts
+        print(f"AI took {elapsed:.2f} seconds to make a move.")
         
         board.display()
         print()
