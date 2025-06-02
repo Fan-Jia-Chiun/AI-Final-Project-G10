@@ -18,10 +18,13 @@ def single_player_mode(board: Board):
             continue
         if agent == 'minimax':
             agent = agent_minimax
+            print("Minimax Mode")
         elif agent == 'alphabeta':
             agent = agent_alphabeta
+            print("Alphabeta Mode")
         else:
             agent = agent_reflex
+            print("Reflex Mode")
         break
     
     while True:

@@ -19,4 +19,23 @@ class General(Piece):
                     elif self.color == PieceColor.BLACK and new_pos[1] >= 7:
                         moves.append(new_pos)
         
+        if self.color == PieceColor.RED:
+            for ny in range(y + 1, 10):
+                new_pos = (x, ny)
+                piece = board.get_piece(new_pos)
+                if piece != None:
+                    if isinstance(piece, General):
+                        moves.append(new_pos)
+                    else:
+                        break
+        else:
+            for ny in range(y - 1, -1, -1):
+                new_pos = (x, ny)
+                piece = board.get_piece(new_pos)
+                if piece != None:
+                    if isinstance(piece, General):
+                        moves.append(new_pos)
+                    else:
+                        break
+                    
         return moves
