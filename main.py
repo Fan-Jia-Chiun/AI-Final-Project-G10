@@ -1,6 +1,6 @@
 from chinese_chess.board import Board
 from chinese_chess.pieces.base import PieceColor, Piece
-from agents import agent_minimax, agent_alphabeta, agent_reflex
+from agents import agent_minimax, agent_alphabeta, agent_reflex, agent_basic_alphabeta
 import time
 
 def place_piece(board: Board, piece, position):
@@ -11,10 +11,10 @@ def single_player_mode(board: Board):
     print("Single player mode: You are playing against AI.")
     while True:
         # Select the type of agent.
-        agent = input("Select the type of agent (minimax, alphabeta, reflex): ").lower()
+        agent = input("Select the type of agent2/black (minimax, alphabeta, basic_alphabeta, reflex): ").lower()
         if agent == "exit":
             return
-        if agent not in ['minimax', 'alphabeta', 'reflex']:
+        if agent not in ['minimax', 'alphabeta', 'basic_alphabeta', 'reflex']:
             print("Invalid agent name.")
             continue
         if agent == 'minimax':
@@ -23,6 +23,9 @@ def single_player_mode(board: Board):
         elif agent == 'alphabeta':
             agent = agent_alphabeta
             print("Alphabeta Mode")
+        elif agent == 'basic_alphabeta':
+            agent = agent_basic_alphabeta
+            print("Basic Alphabeta Mode")
         else:
             agent = agent_reflex
             print("Reflex Mode")
@@ -118,10 +121,11 @@ def two_AI_mode(board: Board):
     
     # 選 agent1/red
     while True:
-        agent1 = input("Select the type of agent1/red (minimax, alphabeta, reflex): ").lower()
+        agent1 = input("Select the type of agent2/black (minimax, alphabeta, basic_alphabeta, reflex): ").lower()
+        agent1_total_moves_time = []
         if agent1 == "exit":
             return
-        if agent1 not in ['minimax', 'alphabeta', 'reflex']:
+        if agent1 not in ['minimax', 'alphabeta', 'basic_alphabeta', 'reflex']:
             print("Invalid agent name.")
             continue
         if agent1 == 'minimax':
@@ -130,6 +134,9 @@ def two_AI_mode(board: Board):
         elif agent1 == 'alphabeta':
             agent1 = agent_alphabeta
             print("Alphabeta Mode")
+        elif agent1 == 'basic_alphabeta':
+            agent1 = agent_basic_alphabeta
+            print("Basic Alphabeta Mode")
         else:
             agent1 = agent_reflex
             print("Reflex Mode")
@@ -137,10 +144,11 @@ def two_AI_mode(board: Board):
 
     # 選 agent2/black
     while True:
-        agent2 = input("Select the type of agent2/black (minimax, alphabeta, reflex): ").lower()
+        agent2 = input("Select the type of agent2/black (minimax, alphabeta, basic_alphabeta, reflex): ").lower()
+        agent2_total_moves_time = []
         if agent2 == "exit":
             return
-        if agent2 not in ['minimax', 'alphabeta', 'reflex']:
+        if agent2 not in ['minimax', 'alphabeta', 'basic_alphabeta', 'reflex']:
             print("Invalid agent name.")
             continue
         if agent2 == 'minimax':
@@ -149,6 +157,9 @@ def two_AI_mode(board: Board):
         elif agent2 == 'alphabeta':
             agent2 = agent_alphabeta
             print("Alphabeta Mode")
+        elif agent2 == 'basic_alphabeta':
+            agent2 = agent_basic_alphabeta
+            print("Basic Alphabeta Mode")
         else:
             agent2 = agent_reflex
             print("Reflex Mode")
@@ -175,13 +186,25 @@ def two_AI_mode(board: Board):
 
         elapsed = time.time() - start_ts
         print(f"AI took {elapsed:.2f} seconds to make a move.")
-        
+
+        if isRedTurn:
+            agent1_total_moves_time.append(elapsed)
+        else:
+            agent2_total_moves_time.append(elapsed)
+
         board.display()
         print()
         isRedTurn = not isRedTurn
         
         if board.terminate(True):
             print("Game over!")
+            print("Agent1: ", agent1.__name__, "Total time:", sum(agent1_total_moves_time), "seconds")
+            print("Agent1: ", agent1.__name__, "Average time:", sum(agent1_total_moves_time) / len(agent1_total_moves_time) if agent1_total_moves_time else 0, "seconds per move")
+            print("Agent1: ", agent1.__name__, "Max cost time:", max(agent1_total_moves_time) if agent1_total_moves_time else 0, "seconds for a move")
+            print("----------------------")
+            print("Agent2: ", agent2.__name__, "Total time:", sum(agent2_total_moves_time), "seconds")
+            print("Agent2: ", agent2.__name__, "Average time:", sum(agent2_total_moves_time) / len(agent2_total_moves_time) if agent2_total_moves_time else 0, "seconds per move")
+            print("Agent2: ", agent2.__name__, "Max cost time:", max(agent2_total_moves_time) if agent2_total_moves_time else 0, "seconds for a move")
             break
 
 
